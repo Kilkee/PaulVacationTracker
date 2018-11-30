@@ -71,7 +71,7 @@ public class EmployeeVacationAdapter extends RecyclerView.Adapter<EmployeeVacati
     public int getItemCount() {        return mEmployeeVacationSnapshots.size();
     }
 
-    static class EmployeeVacationViewHolder extends RecyclerView.ViewHolder{
+    class EmployeeVacationViewHolder extends RecyclerView.ViewHolder{
 
         private TextView mNameTextView;
         private TextView mStartDateTextView;
@@ -88,9 +88,10 @@ public class EmployeeVacationAdapter extends RecyclerView.Adapter<EmployeeVacati
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    DocumentSnapshot ds = mEmployeeVacationSnapshots.get(getAdapterPosition());;
                     Context c = view.getContext();
                     Intent intent = new Intent(c, EmployeeVacationDetailActivity.class);
-
+                    intent.putExtra(Constants.EXTRA_DOC_ID, ds.getId());
                     c.startActivity(intent);
 
 

@@ -10,4 +10,6 @@ public class Constants {
     public static final String KEY_ENDDATE = "enddate";
     public static final String KEY_REASON = "reason";
 
+    public static final String EXTRA_DOC_ID = "document_id";
+
 }
