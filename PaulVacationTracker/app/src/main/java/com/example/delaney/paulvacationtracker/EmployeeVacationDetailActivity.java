@@ -1,15 +1,18 @@
 package com.example.delaney.paulvacationtracker;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.google.firebase.firestore.DocumentReference;
@@ -17,6 +20,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class EmployeeVacationDetailActivity extends AppCompatActivity {
 
@@ -71,10 +77,52 @@ public class EmployeeVacationDetailActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+             showEditDialog();
             }
         });
+    }
+
+    private void showEditDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        View view = getLayoutInflater().inflate(R.layout.employeevacation_dialog, null, false);
+        builder.setView(view);
+        builder.setTitle("Edit this vacation");
+
+        final TextView employeeEditText = view.findViewById(R.id.dialog_employee_edittext);
+        final TextView startDateEditText = view.findViewById(R.id.dialog_startdate_edittext);
+        final TextView endDateEditText = view.findViewById(R.id.dialog_enddate_edittext);
+        final TextView reasonEditText = view.findViewById(R.id.dialog_reason_edittext);
+
+        employeeEditText.setText((String)mDocSnapshot.get(Constants.KEY_EMPLOYEE));
+        startDateEditText.setText((String)mDocSnapshot.get(Constants.KEY_STARTDATE));
+        endDateEditText.setText((String)mDocSnapshot.get(Constants.KEY_ENDDATE));
+        reasonEditText.setText((String)mDocSnapshot.get(Constants.KEY_REASON));
+
+
+        builder.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int i) {
+
+                Map<String, Object> emp = new HashMap<>();
+                emp.put(Constants.KEY_EMPLOYEE, employeeEditText.getText().toString());
+                emp.put(Constants.KEY_STARTDATE, startDateEditText.getText().toString());
+                emp.put(Constants.KEY_ENDDATE, endDateEditText.getText().toString());
+                emp.put(Constants.KEY_REASON, reasonEditText.getText().toString());
+
+                mDocRef.update(emp);
+
+                //emp.put(Constants.KEY_CREATED, new Date());
+
+            }
+        });
+
+
+
+
+
+        builder.setNegativeButton(android.R.string.cancel, null);
+        builder.create().show();
+
     }
 
     @Override
