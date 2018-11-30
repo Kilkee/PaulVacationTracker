@@ -1,5 +1,7 @@
 package com.example.delaney.paulvacationtracker;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -82,6 +84,18 @@ public class EmployeeVacationAdapter extends RecyclerView.Adapter<EmployeeVacati
             mStartDateTextView = itemView.findViewById(R.id.itemview_start_date);
             mEndDateTextView = itemView.findViewById(R.id.itemview_end_date);
             mReasonTextView = itemView.findViewById(R.id.itemview_reason);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Context c = view.getContext();
+                    Intent intent = new Intent(c, EmployeeVacationDetailActivity.class);
+
+                    c.startActivity(intent);
+
+
+                }
+            });
         }
     }
 }
