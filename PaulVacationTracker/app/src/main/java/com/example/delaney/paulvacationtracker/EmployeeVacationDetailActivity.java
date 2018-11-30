@@ -6,13 +6,22 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+
 public class EmployeeVacationDetailActivity extends AppCompatActivity {
 
+    private DocumentReference mDocRef;
+    private DocumentSnapshot mDocSnapshot;
     private TextView mEmployeeTextView;
     private TextView mStartdateTextView;
     private TextView mEnddateTextView;
@@ -36,7 +45,27 @@ public class EmployeeVacationDetailActivity extends AppCompatActivity {
         String docId = getIntent().getStringExtra(Constants.EXTRA_DOC_ID);
 
         //Temp test
-        mEmployeeTextView.setText(docId);
+       // mEmployeeTextView.setText(docId);
+        mDocRef = FirebaseFirestore.getInstance().collection(Constants.COLLECTION_PATH).document(docId);
+        mDocRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(DocumentSnapshot documentSnapshot, FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(Constants.TAG, "Listen failed");
+                    return;
+                }
+                if (documentSnapshot.exists()) {
+                    mDocSnapshot = documentSnapshot;
+                    mEmployeeTextView.setText((String)documentSnapshot.get(Constants.KEY_EMPLOYEE));
+                    mStartdateTextView.setText((String)documentSnapshot.get(Constants.KEY_STARTDATE));
+                    mEnddateTextView.setText((String)documentSnapshot.get(Constants.KEY_ENDDATE));
+                    mReasonTextView.setText((String)documentSnapshot.get(Constants.KEY_REASON));
+
+                }
+            }
+
+        });
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
