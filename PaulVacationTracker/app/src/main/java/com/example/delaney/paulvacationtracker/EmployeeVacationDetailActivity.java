@@ -89,8 +89,10 @@ public class EmployeeVacationDetailActivity extends AppCompatActivity {
 
         switch (item.getItemId()){
             case R.id.action_delete:
-                //TODO: Delete this quote and close this activity
+                mDocRef.delete();
+                finish();
                 return true;
+
 
         }
         return super.onOptionsItemSelected(item);
